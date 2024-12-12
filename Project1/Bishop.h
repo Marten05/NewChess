@@ -9,6 +9,6 @@ class Bishop :public Piece
 private:
 	
 public:
-	Bishop(char c, cordinates x, sf::Vector2f pos);
+	Bishop(string Type, char c, cordinates x, sf::Vector2f pos, string fileName);
 };
-Bishop::Bishop(char c,cordinates x,sf::Vector2f pos) :Piece(c, x, pos){}
+Bishop::Bishop(string TypePiece, char c, cordinates x, sf::Vector2f pos, string fileName) :Piece(TypePiece, c, x, pos, fileName) {}

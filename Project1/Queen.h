@@ -9,9 +9,9 @@ class Queen :public Piece
 private:
 	
 public:
-	Queen(char c, cordinates x, sf::Vector2f pos);
+	Queen(string Type, char c, cordinates x, sf::Vector2f pos, string fileName);
 };
-Queen::Queen(char c, cordinates x, sf::Vector2f pos) :Piece(c, x, pos)
+Queen::Queen(string TypePiece, char c, cordinates x, sf::Vector2f pos, string fileName) :Piece(TypePiece,c, x, pos, fileName)
 {
 
 }

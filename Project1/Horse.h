@@ -9,9 +9,9 @@ class Horse :public Piece
 private:
 	
 public:
-	Horse(char c, cordinates x, sf::Vector2f pos);
+	Horse(string Type, char c, cordinates x, sf::Vector2f pos, string fileName);
 };
-Horse::Horse(char c, cordinates x, sf::Vector2f pos) :Piece(c, x, pos)
+Horse::Horse(string Type, char c, cordinates x, sf::Vector2f pos, string fileName) :Piece(Type, c, x, pos, fileName)
 {
 
 }

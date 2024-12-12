@@ -9,9 +9,8 @@ class Rook :public Piece
 private:
 	
 public:
-	Rook(char c, cordinates x, sf::Vector2f pos);
+	Rook(string Type, char c, cordinates x, sf::Vector2f pos, string fileName);
 };
-Rook::Rook(char c, cordinates x, sf::Vector2f pos) :Piece(c, x, pos)
+Rook::Rook(string Type, char c, cordinates x, sf::Vector2f pos, string fileName) :Piece(Type, c, x, pos, fileName)
 {
-
 }

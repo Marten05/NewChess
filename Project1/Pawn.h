@@ -9,6 +9,8 @@ class Pawn :public Piece
 private:
 	
 public:
-	Pawn(char c, cordinates x, sf::Vector2f pos);
+	Pawn(string TypePiece, char c, cordinates x, sf::Vector2f pos, string fileName);
 };
-Pawn::Pawn(char c, cordinates x, sf::Vector2f pos):Piece(c,x,pos){}
+Pawn::Pawn(string TypePiece, char c, cordinates x, sf::Vector2f pos, string fileName) : Piece(TypePiece, c, x, pos, fileName)
+{
+}

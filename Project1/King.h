@@ -9,9 +9,9 @@ class King :public Piece
 private:
 	
 public:
-	King(char c, cordinates x, sf::Vector2f pos);
+	King(string Type, char c, cordinates x, sf::Vector2f pos, string fileName);
 };
-King::King(char c, cordinates x, sf::Vector2f pos) :Piece(c, x, pos)
+King::King(string Type, char c, cordinates x, sf::Vector2f pos, string fileName) :Piece(Type, c, x, pos, fileName)
 {
 
 }

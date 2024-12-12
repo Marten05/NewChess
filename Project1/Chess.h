@@ -7,7 +7,7 @@ using namespace std;
 class Chess
 {
 private:
-	board Board;
+	Board Board;
 	bool Gamestate;
 	string Turn;
 public:
@@ -24,10 +24,6 @@ void Chess::play()
 {
 	sf::RenderWindow window;
 	window.create(sf::VideoMode(640,640),"Chess");
-	sf::Texture ChessBoard;
-	ChessBoard.loadFromFile("Board.png");
-	sf::Sprite Board(ChessBoard);
-	
 	while (window.isOpen())
 	{
 		sf::Event evnt;
@@ -48,7 +44,8 @@ void Chess::play()
 			}
 
 		}
-		window.draw(Board);
+		window.clear();
+		Board.Drawboard(window);
 		window.display();
 	}
 }

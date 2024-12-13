@@ -20,6 +20,7 @@ protected:
 public:
 	Piece(string TypePiece,char c,cordinates x, sf::Vector2f pos,string fileName);
 	void DrawPiece(sf::RenderWindow &win);
+	void move(int x, int y);
 };
 Piece::Piece(string TypePiece,char c, cordinates x, sf::Vector2f pos,string fileName)
 {
@@ -40,4 +41,14 @@ Piece::Piece(string TypePiece,char c, cordinates x, sf::Vector2f pos,string file
 void Piece::DrawPiece(sf::RenderWindow &win)
 {
 	win.draw(piece);
+}
+void Piece::move(int x, int y)
+{
+	int r = (y - 23) / 75;
+	int c = (x - 23) / 75;
+	this->index.x = r;
+	this->index.y = c;
+	this->position.x = ((c * 75) + 23);
+	this->position.y = ((r * 75) + 23);
+	this->piece.setPosition(position);
 }

@@ -16,6 +16,7 @@ private:
 	Piece* RC[8][8];
     bool Gamestate;
     bool Turn;//Ture=White,False=Black
+    bool allleagalmove[8][8];
     sf::Texture Boardtexture;
     sf::Sprite board;
 public:
@@ -23,9 +24,11 @@ public:
     void initializeBoard();
     void play(sf::RenderWindow &window);
     void Drawboard(sf::RenderWindow& win);
+    void DrawPiece(Piece* RC[8][8], sf::RenderWindow& win);
+    void DrawHighlights(sf::RenderWindow& window, bool alllegalmove[8][8]);
+    void unhighlight(bool alllegalmove[8][8]);
     Piece* getpos(int x,int y);
     void changeturn();
-    
 };
 Board::Board() 
 {
@@ -33,12 +36,14 @@ Board::Board()
         for (int j = 0; j < 8; j++) 
         {
             RC[i][j] = nullptr;
+            allleagalmove[i][j] = false;
         }
     }
     Gamestate = 1;
     Turn = 1;
     Boardtexture.loadFromFile("Board.png");
     board.setTexture(Boardtexture);
+    
 }
 void Board::play(sf::RenderWindow& window)
 {
@@ -66,10 +71,15 @@ void Board::play(sf::RenderWindow& window)
                         cur = getpos(xpos, ypos);//to get positon
                         Sr = (ypos - 23) / 75;
                         Sc = (xpos - 23) / 75;
+                        if (cur != nullptr)
+                        {
+                            cur->highlight(RC, Sr, Sc, allleagalmove);
+                        }
                     }
                     else if (cur != nullptr)
                     {
                         {
+                            
                             int xpos = sf::Mouse::getPosition(window).x;
                             int ypos = sf::Mouse::getPosition(window).y;
                             int Er = (ypos - 23) / 75;
@@ -78,7 +88,9 @@ void Board::play(sf::RenderWindow& window)
                             if (cur->isleagalmove(RC,Er,Ec) == 1)//Move to that Position
                             {
                                 cout << "is legal" << endl;;
+
                                 cur->move(xpos, ypos);
+                                unhighlight(allleagalmove);
                                 RC[Er][Ec] = cur;
                                 RC[Sr][Sc] = nullptr;
                                 cur = nullptr;
@@ -93,6 +105,8 @@ void Board::play(sf::RenderWindow& window)
             }
             window.clear();
             Drawboard(window);
+            DrawPiece(RC, window);
+            DrawHighlights(window,allleagalmove);
             window.display();
 
         }
@@ -132,15 +146,7 @@ void Board::Drawboard(sf::RenderWindow &win)
 {
     win.draw(board);
 
-    for (int i = 0; i<8; i++)
-    {
-        for (int j = 0; j<8; j++)
-        {
-           if(RC[i][j]!= nullptr)
-            RC[i][j]->DrawPiece(win);
-
-        }
-    }
+   
 }
 Piece* Board::getpos(int x, int y)
 {
@@ -163,9 +169,52 @@ Piece* Board::getpos(int x, int y)
         return temp;
         
 }
-
 void Board::changeturn()
 {
     Turn = !Turn;
 }
+void Board::DrawPiece(Piece* RC[8][8], sf::RenderWindow& win)
+{
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if (RC[i][j] != nullptr)
+            {
+                win.draw(RC[i][j]->SpritePiece());
+            }
 
+        }
+    }
+}
+void Board::DrawHighlights(sf::RenderWindow& window, bool alllegalmove[8][8])
+{
+    sf::RectangleShape highlight(sf::Vector2f(75, 75)); // 75x75 is the size of each square
+    /*highlight.setFillColor(sf::Color(0, 255, 0, 100)); */ // Semi-transparent green
+    highlight.setFillColor(sf::Color(169, 169, 169, 100)); // Soft Gray
+    //highlight.setFillColor(sf::Color(0, 128, 128, 100)); // Teal
+    //highlight.setFillColor(sf::Color(255, 223, 0, 100)); // Golden Yellow
+
+
+    for (int i = 0; i < 8; i++) 
+    {
+        for (int j = 0; j < 8; j++) 
+        {
+            if (alllegalmove[i][j]) 
+            {
+                highlight.setPosition((j * 75 )+22.8, (i * 75)+22.8); // Position based on board grid
+                window.draw(highlight);
+            }
+        }
+    }
+}
+void Board::unhighlight(bool alllegalmove[8][8]) 
+{
+    for (int i = 0; i < 8; i++) 
+    {
+        for (int j = 0; j < 8; j++) 
+        {
+            alllegalmove[i][j] = false; // Reset all cells to false
+        }
+    }
+}

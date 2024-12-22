@@ -21,7 +21,7 @@ bool Horse::isleagalmove(Piece* RC[8][8], int Er, int Ec)
   
     if ((abs(Er - this->index.x) == 2 && abs(Ec - this->index.y) == 1) || (abs(Er - this->index.x) == 1 && abs(Ec - this->index.y) == 2)) 
     {
-        return true;
+            return true;   
     }
 
     cout << "Knight Invalid move" << std::endl;

@@ -20,9 +20,9 @@ protected:
 public:
 	Piece(string TypePiece,char c,cordinates x, sf::Vector2f pos,string fileName);
 
-	void DrawPiece(sf::RenderWindow &win);
-	void move(int x, int y);
-	bool getColor();
+	sf::Sprite SpritePiece();//getter sprite
+	void move(int x, int y);//to make move
+	bool getColor();//to get color
 
 	bool horizentalmove(int xpos,int ypos);
 	bool verticalmove(int Er, int Ec);
@@ -31,7 +31,7 @@ public:
 	bool isverticalclear(Piece* RC[8][8], int Er, int Ec);
 	bool isdiagnolclear(Piece* RC[8][8],int xpos, int ypos);
 
-
+	void highlight(Piece* RC[8][8], int Sr, int Sc, bool alllegalmove[8][8]);
 	bool virtual isleagalmove(Piece* RC[8][8], int Er, int Ec) = 0;
 };
 Piece::Piece(string TypePiece,char c, cordinates x, sf::Vector2f pos,string fileName)
@@ -50,10 +50,7 @@ Piece::Piece(string TypePiece,char c, cordinates x, sf::Vector2f pos,string file
 	piece.setPosition(pos.x,pos.y);
 	piece.setScale(0.28f, 0.28f);
 }
-void Piece::DrawPiece(sf::RenderWindow &win)
-{
-	win.draw(piece);
-}
+
 void Piece::move(int x, int y)
 {
 	int r = (y - 23) / 75;
@@ -199,4 +196,20 @@ bool Piece::isdiagnolclear(Piece* RC[8][8], int Er, int Ec)
 		}
 	}
 	return true;
+}
+sf::Sprite Piece::SpritePiece() //getter
+{
+	return this->piece;
+}
+void Piece::highlight(Piece* RC[8][8], int Sr, int Sc, bool alllegalmove[8][8])
+{
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++)
+		{
+			if (this->isleagalmove(RC,i,j) ==true )
+			{
+				alllegalmove[i][j] = true;
+			}
+		}
+	}
 }

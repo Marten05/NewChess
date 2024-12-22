@@ -10,8 +10,22 @@ private:
 	
 public:
 	Queen(string Type, char c, cordinates x, sf::Vector2f pos, string fileName);
+	bool virtual isleagalmove(Piece* RC[8][8], int Er, int Ec)override;
 };
 Queen::Queen(string TypePiece, char c, cordinates x, sf::Vector2f pos, string fileName) :Piece(TypePiece,c, x, pos, fileName)
 {
 
+}
+bool Queen::isleagalmove(Piece* RC[8][8], int Er, int Ec)
+{
+    // Check horizontal or vertical (rook-like move)
+    if (this->index.x== Er || this->index.y == Ec) {
+        return (this->horizentalmove(Er, Ec) && this->ishorizentalclear(RC, Er, Ec)) || (this->verticalmove(Er, Ec) && this->isverticalclear(RC, Er, Ec));
+    }
+    // Check  diagonal (bishop-like move)
+    if (abs(Er - this->index.x) == abs(Ec - this->index.y)) {
+        return (this->diagnolmove(Er, Ec) && this->isdiagnolclear(RC, Er, Ec));
+    }
+    cout << "Queen legal move: FALSE - Invalid move" <<endl;
+    return false;
 }

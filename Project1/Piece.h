@@ -19,8 +19,20 @@ protected:
 	sf::Sprite piece;
 public:
 	Piece(string TypePiece,char c,cordinates x, sf::Vector2f pos,string fileName);
+
 	void DrawPiece(sf::RenderWindow &win);
 	void move(int x, int y);
+	bool getColor();
+
+	bool horizentalmove(int xpos,int ypos);
+	bool verticalmove(int Er, int Ec);
+	bool diagnolmove(int Er, int Ec);
+	bool ishorizentalclear(Piece* RC[8][8], int Er, int Ec);
+	bool isverticalclear(Piece* RC[8][8], int Er, int Ec);
+	bool isdiagnolclear(Piece* RC[8][8],int xpos, int ypos);
+
+
+	bool virtual isleagalmove(Piece* RC[8][8], int Er, int Ec) = 0;
 };
 Piece::Piece(string TypePiece,char c, cordinates x, sf::Vector2f pos,string fileName)
 {
@@ -51,4 +63,140 @@ void Piece::move(int x, int y)
 	this->position.x = ((c * 75) + 23);
 	this->position.y = ((r * 75) + 23);
 	this->piece.setPosition(position);
+}
+bool Piece::getColor()
+{
+	return (this->color == 'W');
+}
+bool Piece::verticalmove(int Er, int Ec)
+{	
+	if(this->index.y== Ec)
+	{
+		cout << "veiticalmove TRUE" << endl;
+		return true;
+	}
+	return false;
+}
+bool Piece::horizentalmove(int Er, int Ec)
+{
+	if (this->index.x == Er)
+	{
+		cout << "horizentalmove TRUE" << endl;
+		return true;
+	}
+	return false;
+}
+bool Piece::diagnolmove(int Er, int Ec)
+{
+	if (abs(this->index.x - Er) == abs(this->index.y - Ec)) {
+		return true;
+	}
+	return false;
+}
+bool Piece::ishorizentalclear(Piece* RC[8][8], int Er, int Ec)
+{
+	// left to right
+	if (this->index.y < Ec)
+	{
+		for (int c = this->index.y + 1; c < Ec; c++)
+		{
+			if (RC[this->index.x][c] != nullptr)
+			{
+				cout << "horizentalcheck false1" << endl;
+				return false;
+			}
+		}
+	}
+	//right to left 
+	else if(this->index.y > Ec)
+	{
+		for (int c = Ec + 1; c < this->index.y; c++)
+		{
+			if (RC[this->index.x][c] != nullptr)
+			{
+				cout << "horizentalcheck false2" << endl;
+				return false;
+			}
+		}
+	}
+	cout << "horizentalcheck TRUE" << endl;
+	return true;
+
+}
+bool Piece::isverticalclear(Piece* RC[8][8], int Er, int Ec)
+{
+	// down to up
+	if (this->index.x < Er)
+	{
+		for (int c = this->index.x + 1; c < Er; c++)
+		{
+			if (RC[c][this->index.y] != nullptr)
+			{
+				cout << "verticalcheck false1" << endl;
+				return false;
+			}
+		}
+	}
+	//up to down 
+	else if (this->index.x > Er)
+	{
+		for (int c = Er + 1; c < this->index.x; c++)
+		{
+			if (RC[c][this->index.y] != nullptr)
+			{
+				cout << "verticalcheck false2" << endl;
+				return false;
+			}
+		}
+	}
+	cout << "verticalcheck TRUE" << endl;
+	return true;
+}
+bool Piece::isdiagnolclear(Piece* RC[8][8], int Er, int Ec)
+{
+	// Moving up-left
+	if (Er > this->index.x && Ec > this->index.y) 
+	{
+		for (int r = this->index.x + 1, c = this->index.y + 1; r < Er && c < Ec; r++, c++)
+		{
+			if (RC[r][c] != nullptr) 
+			{
+				return false;
+			}
+		}
+	}
+	// Moving up-right
+	else if (Er > this->index.x && Ec < this->index.y) 
+	{
+		for (int r = this->index.x + 1, c = this->index.y - 1; r < Er && c > Ec; r++, c--) 
+		{
+			if (RC[r][c] != nullptr) 
+			{
+				return false;
+			}
+		}
+	}
+	// Moving down-left
+	else if (Er < this->index.x && Ec > this->index.y)
+	{
+		for (int r = this->index.x - 1, c = this->index.y + 1; r > Er && c < Ec; r--, c++) 
+		{
+			if (RC[r][c] != nullptr) 
+			{
+				return false;
+			}
+		}
+	}
+	// Moving down-right
+	else if (Er < this->index.x&& Ec < this->index.y) 
+	{
+		for (int r = this->index.x - 1, c = this->index.y - 1; r > Er && c > Ec; r--, c--)
+		{
+			if (RC[r][c] != nullptr) 
+			{
+				return false;
+			}
+		}
+	}
+	return true;
 }

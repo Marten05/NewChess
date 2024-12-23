@@ -30,21 +30,14 @@ bool Pawn::isleagalmove(Piece* RC[8][8], int Er, int Ec)
 	{
 		return true;
 	}
-	if (this->index.y == Ec && Er == this->index.x +(D*2) && RC[Er][Ec] == nullptr/*&& RC[Er+D][Ec+D] == nullptr*/)
+	if (this->index.y == Ec && Er == this->index.x +(D*2) && RC[Er][Ec] == nullptr&& RC[Er+D][Ec+D] == nullptr)
 	{
 		if ((this->index.x == 1 && this->getColor() == false) || (this->index.x == 6 && this->getColor() == true))
 		{
-			if (isverticalclear(RC, Er, Ec) == true)
-			{
-				return true;
-			}
+			return true;
 		}
 	}
 	if (abs(this->index.y - Ec) == 1 && Er == this->index.x + D && RC[Er][Ec] != nullptr && RC[Er][Ec]->getColor() != this->getColor())
-	{
-		return true;
-	}
-	if (this->index.x == Er && this->index.y == Ec)
 	{
 		return true;
 	}

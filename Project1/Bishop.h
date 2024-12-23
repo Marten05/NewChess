@@ -17,20 +17,7 @@ bool Bishop::isleagalmove(Piece* RC[8][8], int Er, int Ec)
 {
     if (this->diagnolmove(Er, Ec) && this->isdiagnolclear(RC, Er, Ec))
     {
-        if (RC[Er][Ec] != nullptr)
-        {
-            if (RC[Er][Ec]->getColor() != this->getColor())
-            {
-                return true;
-            }
-        }
-        else
-        {
-            return true;
-        }
-    }
-    if (this->index.x == Er && this->index.y == Ec)
-    {
+        cout << "Bishop legal move TRUE" << endl;
         return true;
     }
     cout << "Bishop legal move False" << endl;

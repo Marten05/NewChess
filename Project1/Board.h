@@ -87,21 +87,16 @@ void Board::play(sf::RenderWindow& window)
                             cout << Er << " " << Ec<<endl;
                             if (cur->isleagalmove(RC,Er,Ec) == 1)//Move to that Position
                             {
-                                cur->move(Sr,Sc,Er, Ec);
+                                cout << "is legal" << endl;;
+
+                                cur->move(xpos, ypos);
                                 unhighlight(allleagalmove);
-                                RC[Sr][Sc] = nullptr;
                                 RC[Er][Ec] = cur;
-                                cout << Sr << " " << Sc << endl;
-                                cout << Er << " " << Ec << endl;
-                                if ((Sr == Er) && (Sc == Ec))
-                                {
-                                    changeturn();
-                                }
-                                changeturn();
+                                RC[Sr][Sc] = nullptr;
                                 cur = nullptr;
+                                changeturn();
                             }
-                            else 
-                            {
+                            else {
                                 cur = nullptr;
                             }
                         }
@@ -196,9 +191,9 @@ void Board::DrawHighlights(sf::RenderWindow& window, bool alllegalmove[8][8])
 {
     sf::RectangleShape highlight(sf::Vector2f(75, 75)); // 75x75 is the size of each square
     /*highlight.setFillColor(sf::Color(0, 255, 0, 100)); */ // Semi-transparent green
-    /*highlight.setFillColor(sf::Color(169, 169, 169, 100));*/ // Soft Gray
-    /*highlight.setFillColor(sf::Color(0, 128, 128, 100));*/ // Teal
-    highlight.setFillColor(sf::Color(255, 223, 0, 100)); // Golden Yellow
+    highlight.setFillColor(sf::Color(169, 169, 169, 100)); // Soft Gray
+    //highlight.setFillColor(sf::Color(0, 128, 128, 100)); // Teal
+    //highlight.setFillColor(sf::Color(255, 223, 0, 100)); // Golden Yellow
 
 
     for (int i = 0; i < 8; i++) 
@@ -207,7 +202,7 @@ void Board::DrawHighlights(sf::RenderWindow& window, bool alllegalmove[8][8])
         {
             if (alllegalmove[i][j]) 
             {
-                highlight.setPosition((j * 75 )+21, (i * 75)+21); // Position based on board grid
+                highlight.setPosition((j * 75 )+22.8, (i * 75)+22.8); // Position based on board grid
                 window.draw(highlight);
             }
         }

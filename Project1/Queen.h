@@ -19,12 +19,44 @@ Queen::Queen(string TypePiece, char c, cordinates x, sf::Vector2f pos, string fi
 bool Queen::isleagalmove(Piece* RC[8][8], int Er, int Ec)
 {
     // Check horizontal or vertical (rook-like move)
-    if (this->index.x== Er || this->index.y == Ec) {
-        return (this->horizentalmove(Er, Ec) && this->ishorizentalclear(RC, Er, Ec)) || (this->verticalmove(Er, Ec) && this->isverticalclear(RC, Er, Ec));
+    if (this->index.x== Er || this->index.y == Ec)
+    {
+        if ((this->horizentalmove(Er, Ec) && this->ishorizentalclear(RC, Er, Ec)) || (this->verticalmove(Er, Ec) && this->isverticalclear(RC, Er, Ec)))
+        {
+            if (RC[Er][Ec] != nullptr)
+            {
+                if (RC[Er][Ec]->getColor() != this->getColor())
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
     // Check  diagonal (bishop-like move)
-    if (abs(Er - this->index.x) == abs(Ec - this->index.y)) {
-        return (this->diagnolmove(Er, Ec) && this->isdiagnolclear(RC, Er, Ec));
+    if (abs(Er - this->index.x) == abs(Ec - this->index.y)) 
+    {
+        if (this->diagnolmove(Er, Ec) && this->isdiagnolclear(RC, Er, Ec))
+        {
+            if (RC[Er][Ec] != nullptr)
+            {
+                if (RC[Er][Ec]->getColor() != this->getColor())
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+    if (this->index.x == Er && this->index.y == Ec)
+    {
+        return true;
     }
     cout << "Queen legal move: FALSE - Invalid move" <<endl;
     return false;

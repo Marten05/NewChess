@@ -21,7 +21,7 @@ public:
 	Piece(string TypePiece,char c,cordinates x, sf::Vector2f pos,string fileName);
 
 	sf::Sprite SpritePiece();//getter sprite
-	void move(int x, int y);//to make move
+	void move(int Sr, int Sc, int x, int y);//to make move
 	bool getColor();//to get color
 
 	bool horizentalmove(int xpos,int ypos);
@@ -51,15 +51,14 @@ Piece::Piece(string TypePiece,char c, cordinates x, sf::Vector2f pos,string file
 	piece.setScale(0.28f, 0.28f);
 }
 
-void Piece::move(int x, int y)
+void Piece::move(int Sr,int Sc,int Er, int Ec)
 {
-	int r = (y - 23) / 75;
-	int c = (x - 23) / 75;
-	this->index.x = r;
-	this->index.y = c;
-	this->position.x = ((c * 75) + 23);
-	this->position.y = ((r * 75) + 23);
-	this->piece.setPosition(position);
+		this->index.x = Er;
+		this->index.y = Ec;
+		this->position.x = ((Ec * 75) + 23);
+		this->position.y = ((Er * 75) + 23);
+		this->piece.setPosition(position);
+	
 }
 bool Piece::getColor()
 {
@@ -208,7 +207,9 @@ void Piece::highlight(Piece* RC[8][8], int Sr, int Sc, bool alllegalmove[8][8])
 		{
 			if (this->isleagalmove(RC,i,j) ==true )
 			{
-				alllegalmove[i][j] = true;
+				
+					alllegalmove[i][j] = true;
+				
 			}
 		}
 	}

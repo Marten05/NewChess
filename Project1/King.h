@@ -20,9 +20,22 @@ bool King::isleagalmove(Piece* RC[8][8], int Er, int Ec)
 {
     if (abs(Er - this->index.x) <= 1 && abs(Ec - this->index.y) <= 1) 
     {
-            cout << "King legal move: TRUE" << endl;
+        if (RC[Er][Ec] != nullptr)
+        {
+            if (RC[Er][Ec]->getColor() != this->getColor())
+            {
+                return true;
+            }
+        }
+        else
+        {
             return true;
+        }
         
+    }
+    if (this->index.x == Er && this->index.y == Ec)
+    {
+        return true;
     }
 
     cout << "King legal move: FALSE " << endl;

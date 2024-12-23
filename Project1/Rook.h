@@ -17,14 +17,38 @@ Rook::Rook(string Type, char c, cordinates x, sf::Vector2f pos, string fileName)
 }
 bool Rook::isleagalmove(Piece* RC[8][8], int Er, int Ec)
 {
-	if (this->horizentalmove(Er, Ec) && this->ishorizentalclear(RC, Er, Ec)) {
-		cout << "Horizontal move is valid." << std::endl;
+	if (this->horizentalmove(Er, Ec) && this->ishorizentalclear(RC, Er, Ec))
+	{
+		if (RC[Er][Ec] != nullptr)
+		{
+			if (RC[Er][Ec]->getColor() != this->getColor())
+			{
+				return true;
+			}
+		}
+		else
+		{
+			return true;
+		}
+	}
+	if (this->verticalmove(Er, Ec) && this->isverticalclear(RC, Er, Ec)) 
+	{
+		if (RC[Er][Ec] != nullptr)
+		{
+			if (RC[Er][Ec]->getColor() != this->getColor())
+			{
+				return true;
+			}
+		}
+		else
+		{
+			return true;
+		}
+	}
+	if (this->index.x == Er && this->index.y == Ec)
+	{
 		return true;
 	}
-	if (this->verticalmove(Er, Ec) && this->isverticalclear(RC, Er, Ec)) {
-		cout << "Vertical move is valid." << std::endl;
-		return true;
-	}
-	std::cout << "Move is invalid." << std::endl;
+	cout << "Move is invalid." << endl;
 	return false;
 }

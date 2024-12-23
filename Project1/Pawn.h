@@ -17,5 +17,29 @@ Pawn::Pawn(string TypePiece, char c, cordinates x, sf::Vector2f pos, string file
 }
 bool Pawn::isleagalmove(Piece* RC[8][8], int Er, int Ec)
 {
-	return true;
+	int D = 0;
+	if (this->getColor() == true)
+	{
+		D = -1;
+	}
+	else
+	{
+		D = 1;
+	}
+	if (this->index.y == Ec && Er == this->index.x + D && RC[Er][Ec] == nullptr)
+	{
+		return true;
+	}
+	if (this->index.y == Ec && Er == this->index.x +(D*2) && RC[Er][Ec] == nullptr&& RC[Er+D][Ec+D] == nullptr)
+	{
+		if ((this->index.x == 1 && this->getColor() == false) || (this->index.x == 6 && this->getColor() == true))
+		{
+			return true;
+		}
+	}
+	if (abs(this->index.y - Ec) == 1 && Er == this->index.x + D && RC[Er][Ec] != nullptr && RC[Er][Ec]->getColor() != this->getColor())
+	{
+		return true;
+	}
+	return false;
 }

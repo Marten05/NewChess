@@ -18,9 +18,11 @@ King::King(string Type, char c, cordinates x, sf::Vector2f pos, string fileName)
 }
 bool King::isleagalmove(Piece* RC[8][8], int Er, int Ec)
 {
-    if (abs(Er - this->index.x) <= 1 && abs(Ec - this->index.y) <= 1) {
-        cout << "King legal move: TRUE" << endl;
-        return true;
+    if (abs(Er - this->index.x) <= 1 && abs(Ec - this->index.y) <= 1) 
+    {
+            cout << "King legal move: TRUE" << endl;
+            return true;
+        
     }
 
     cout << "King legal move: FALSE " << endl;

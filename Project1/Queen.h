@@ -54,10 +54,7 @@ bool Queen::isleagalmove(Piece* RC[8][8], int Er, int Ec)
             }
         }
     }
-    if (this->index.x == Er && this->index.y == Ec)
-    {
-        return true;
-    }
+  
     cout << "Queen legal move: FALSE - Invalid move" <<endl;
     return false;
 }

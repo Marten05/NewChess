@@ -29,10 +29,7 @@ bool Bishop::isleagalmove(Piece* RC[8][8], int Er, int Ec)
             return true;
         }
     }
-    if (this->index.x == Er && this->index.y == Ec)
-    {
-        return true;
-    }
+   
     cout << "Bishop legal move False" << endl;
     return false;
 }

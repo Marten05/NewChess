@@ -21,14 +21,15 @@ private:
     sf::Sprite board;
 public:
 	Board();
-    void initializeBoard();
-    void play(sf::RenderWindow &window);
-    void Drawboard(sf::RenderWindow& win);
-    void DrawPiece(Piece* RC[8][8], sf::RenderWindow& win);
-    void DrawHighlights(sf::RenderWindow& window, bool alllegalmove[8][8]);
-    void unhighlight(bool alllegalmove[8][8]);
-    Piece* getpos(int x,int y);
-    void changeturn();
+    void initializeBoard();//set initial positions
+    void play(sf::RenderWindow &window);//main playing loop
+    void Drawboard(sf::RenderWindow& win);//draws the chess board 
+    void DrawPiece(Piece* RC[8][8], sf::RenderWindow& win);//daws pieces
+    void DrawHighlights(sf::RenderWindow& window, bool alllegalmove[8][8]);//draws highlights
+    void unhighlight(bool alllegalmove[8][8]);//remove highlights
+    Piece* getpos(int x,int y);//get starting position
+    void changeturn();//trun change
+    bool isKinginCheck(Piece* RC[8][8]);
 };
 Board::Board() 
 {
@@ -45,79 +46,84 @@ Board::Board()
     board.setTexture(Boardtexture);
     
 }
-void Board::play(sf::RenderWindow& window)
-{
-    Piece* cur = nullptr; //current piece ptr
-    int Sr = -1, Sc = -1;
-    while (window.isOpen())
-    {
-        sf::Event evnt;
-        while (window.pollEvent(evnt))
-        {
-            if (evnt.type == evnt.Closed)
-            {
-                window.close();
-            }
-            if (evnt.type == sf::Event::MouseButtonPressed)
-            {
-    
-                if (evnt.mouseButton.button == sf::Mouse::Left) 
-                {
-                    
-                    if (cur == nullptr)
-                    {
-                        int xpos = sf::Mouse::getPosition(window).x;
-                        int ypos = sf::Mouse::getPosition(window).y;
-                        cur = getpos(xpos, ypos);//to get positon
-                        Sr = (ypos - 23) / 75;
-                        Sc = (xpos - 23) / 75;
-                        if (cur != nullptr)
-                        {
-                            cur->highlight(RC, Sr, Sc, allleagalmove);
-                        }
-                    }
-                    else if (cur != nullptr)
-                    {
-                        {
-                            
-                            int xpos = sf::Mouse::getPosition(window).x;
-                            int ypos = sf::Mouse::getPosition(window).y;
-                            int Er = (ypos - 23) / 75;
-                            int Ec = (xpos - 23) / 75;
-                            cout << Er << " " << Ec<<endl;
-                            if (cur->isleagalmove(RC,Er,Ec) == 1)//Move to that Position
-                            {
-                                cur->move(Sr,Sc,Er, Ec);
-                                unhighlight(allleagalmove);
-                                RC[Sr][Sc] = nullptr;
-                                RC[Er][Ec] = cur;
-                                cout << Sr << " " << Sc << endl;
-                                cout << Er << " " << Ec << endl;
-                                if ((Sr == Er) && (Sc == Ec))
-                                {
-                                    changeturn();
-                                }
-                                changeturn();
-                                cur = nullptr;
-                            }
-                            else 
-                            {
-                                cur = nullptr;
-                            }
-                        }
-                    }
-                }
-            }
-            window.clear();
-            Drawboard(window);
-            DrawPiece(RC, window);
-            DrawHighlights(window,allleagalmove);
-            window.display();
-
-        }
-        
-    }
-}
+//void Board::play(sf::RenderWindow& window)
+//{
+//    Piece* cur = nullptr; //current piece ptr
+//    int Sr = -1, Sc = -1;
+//    while (window.isOpen())
+//    {
+//        sf::Event evnt;
+//        while (window.pollEvent(evnt))
+//        {
+//            if (evnt.type == evnt.Closed)
+//            {
+//                window.close();
+//            }
+//            if (evnt.type == sf::Event::MouseButtonPressed)
+//            {
+//    
+//                if (evnt.mouseButton.button == sf::Mouse::Left) 
+//                {
+//                    
+//                    if (cur == nullptr)
+//                    {
+//                        int xpos = sf::Mouse::getPosition(window).x;
+//                        int ypos = sf::Mouse::getPosition(window).y;
+//                       
+//                            cur = getpos(xpos, ypos);//to get positon
+//                            Sr = (ypos - 23) / 75;
+//                            Sc = (xpos - 23) / 75;
+//                            if (cur != nullptr)
+//                            {
+//                                cur->highlight(RC, Sr, Sc, allleagalmove);
+//                            }
+//                        
+//                     
+//                    }
+//                    else if (cur != nullptr)
+//                    {
+//                        {
+//                            
+//                            int xpos = sf::Mouse::getPosition(window).x;
+//                            int ypos = sf::Mouse::getPosition(window).y;
+//                            int Er = (ypos - 23) / 75;
+//                            int Ec = (xpos - 23) / 75;
+//                            if (cur->isleagalmove(RC,Er,Ec) == 1&& isKinginCheck(RC) == false)//Move to that Position
+//                            {
+//                                cur->move(Sr,Sc,Er, Ec);
+//                                unhighlight(allleagalmove);
+//                                RC[Sr][Sc] = nullptr;
+//                                RC[Er][Ec] = cur;
+//                                if ((Sr == Er) && (Sc == Ec))
+//                                {
+//                                    changeturn();
+//                                }
+//                                changeturn();
+//                                cur = nullptr;
+//                                if (isKinginCheck(RC) == true)
+//                                {
+//                                    cout << "Check";
+//                                }
+//                            }
+//                            else 
+//                            {
+//                                cout << "Still checked";
+//                                cur = nullptr;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            window.clear();
+//            Drawboard(window);
+//            DrawPiece(RC, window);
+//            DrawHighlights(window,allleagalmove);
+//            window.display();
+//
+//        }
+//        
+//    }
+//}
 void Board::initializeBoard()
 {
     for (int i = 0; i < 8; i++)
@@ -223,3 +229,139 @@ void Board::unhighlight(bool alllegalmove[8][8])
         }
     }
 }
+bool Board::isKinginCheck(Piece* RC[8][8])
+{
+    int OpKR=-1, OpKC=-1;
+    for (int i = 0;i < 8;i++)
+    {
+        for (int y = 0; y < 8; y++)
+        {
+            if (RC[i][y] != nullptr)
+            {
+                if (Turn == true)
+                {
+                    if (RC[i][y]->gettype() == "BKing")
+                    {
+                        OpKR = i;
+                        OpKC = y;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (RC[i][y]->gettype() == "WKing")
+                    {
+                        OpKR = i;
+                        OpKC = y;
+                        break;
+
+                    }
+                }
+            }
+        }
+    }
+    if (OpKC == -1 || OpKR == -1)
+    {
+        return false;
+    }
+    for (int i = 0;i < 8;i++)
+    {
+        for (int j = 0;j < 8;j++)
+        {
+            if (RC[i][j] != nullptr && RC[i][j]->getColor() != RC[OpKR][OpKC]->getColor())
+            {
+                if (RC[i][j]->isleagalmove(RC, OpKR, OpKC) == true)
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+void Board::play(sf::RenderWindow& window)
+{
+    Piece* cur = nullptr; // Current piece pointer
+    int Sr = -1, Sc = -1; // Starting row and column
+
+    while (window.isOpen())
+    {
+        sf::Event evnt;
+        while (window.pollEvent(evnt))
+        {
+            if (evnt.type == sf::Event::Closed)
+            {
+                window.close();
+            }
+            if (evnt.type == sf::Event::MouseButtonPressed)
+            {
+                if (evnt.mouseButton.button == sf::Mouse::Left)
+                {
+                    int xpos = sf::Mouse::getPosition(window).x;
+                    int ypos = sf::Mouse::getPosition(window).y;
+                    int clickedRow = (ypos - 23) / 75;
+                    int clickedCol = (xpos - 23) / 75;
+
+                    if (cur == nullptr)
+                    {
+                        // No piece is currently selected
+                        cur = getpos(xpos, ypos); // Get the piece at the clicked position
+                        Sr = clickedRow;
+                        Sc = clickedCol;
+
+                        if (cur != nullptr)
+                        {
+                            cur->highlight(RC, Sr, Sc, allleagalmove); // Highlight legal moves
+                        }
+                    }
+                    else
+                    {
+                        // A piece is already selected
+                        if (Sr == clickedRow && Sc == clickedCol)
+                        {
+                            // Clicked on the same piece: unselect it
+                            cur = nullptr;
+                            unhighlight(allleagalmove);
+                        }
+                        else
+                        {
+                            // Attempt to move the piece
+                            int Er = clickedRow;
+                            int Ec = clickedCol;
+
+                            if (cur->isleagalmove(RC, Er, Ec) && !isKinginCheck(RC))
+                            {
+                                cur->move(Sr, Sc, Er, Ec); // Perform the move
+                                unhighlight(allleagalmove); // Remove highlights
+                                RC[Sr][Sc] = nullptr;
+                                RC[Er][Ec] = cur;
+
+                                changeturn(); // Change the turn
+                                cur = nullptr;
+
+                                if (isKinginCheck(RC))
+                                {
+                                    cout << "Check!" << endl;
+                                }
+                            }
+                            else
+                            {
+                                cout << "Invalid move or king in check!" << endl;
+                                cur = nullptr;
+                                unhighlight(allleagalmove); // Remove highlights
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Redraw the board and pieces
+        window.clear();
+        Drawboard(window);
+        DrawPiece(RC, window);
+        DrawHighlights(window, allleagalmove); // Draw highlights if any
+        window.display();
+    }
+}
+

@@ -23,6 +23,7 @@ public:
 	sf::Sprite SpritePiece();//getter sprite
 	void move(int Sr, int Sc, int x, int y);//to make move
 	bool getColor();//to get color
+	string gettype();
 
 	bool horizentalmove(int xpos,int ypos);
 	bool verticalmove(int Er, int Ec);
@@ -63,6 +64,10 @@ void Piece::move(int Sr,int Sc,int Er, int Ec)
 bool Piece::getColor()
 {
 	return (this->color == 'W');
+}
+string Piece::gettype()
+{
+	return(this->typePiece);
 }
 bool Piece::verticalmove(int Er, int Ec)
 {	

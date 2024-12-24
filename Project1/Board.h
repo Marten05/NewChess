@@ -30,6 +30,7 @@ public:
     Piece* getpos(int x,int y);//get starting position
     void changeturn();//trun change
     bool isKinginCheck(Piece* RC[8][8]);
+    bool isCheckMate();
 };
 Board::Board() 
 {
@@ -238,7 +239,7 @@ bool Board::isKinginCheck(Piece* RC[8][8])
         {
             if (RC[i][y] != nullptr)
             {
-                if (Turn == true)
+                if (Turn == false)
                 {
                     if (RC[i][y]->gettype() == "BKing")
                     {
@@ -278,6 +279,57 @@ bool Board::isKinginCheck(Piece* RC[8][8])
         }
     }
     return false;
+}
+bool Board::isCheckMate()
+{
+    int OpKR = -1, OpKC = -1;
+    for (int i = 0;i < 8;i++)
+    {
+        for (int y = 0; y < 8; y++)
+        {
+            if (RC[i][y] != nullptr)
+            {
+                if (Turn == false)
+                {
+                    if (RC[i][y]->gettype() == "BKing")
+                    {
+                        OpKR = i;
+                        OpKC = y;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (RC[i][y]->gettype() == "WKing")
+                    {
+                        OpKR = i;
+                        OpKC = y;
+                        break;
+
+                    }
+                }
+            }
+        }
+    }
+    if (OpKC == -1 || OpKR == -1)
+    {
+        return false;
+    }
+    bool check[8][8] = { false };
+    for (int i = 0;i < 8;i++)
+    {
+        for (int j = 0;j < 8;j++)
+        {
+            if (RC[OpKR][OpKC]->isleagalmove(RC, i, j)==true)
+            {
+                check[i][j] == true;
+            }
+
+        }
+
+    }
+
+
 }
 void Board::play(sf::RenderWindow& window)
 {
@@ -329,16 +381,27 @@ void Board::play(sf::RenderWindow& window)
                             int Er = clickedRow;
                             int Ec = clickedCol;
 
-                            if (cur->isleagalmove(RC, Er, Ec) && !isKinginCheck(RC))
+                            if (cur->isleagalmove(RC, Er, Ec))
                             {
-                                cur->move(Sr, Sc, Er, Ec); // Perform the move
-                                unhighlight(allleagalmove); // Remove highlights
-                                RC[Sr][Sc] = nullptr;
+                                Piece* temp = RC[Er][Ec];
                                 RC[Er][Ec] = cur;
+                                RC[Sr][Sc] = nullptr;
+                                if (isKinginCheck(RC))
+                                {
+                                    RC[Sr][Sc] = cur;
+                                    RC[Er][Ec] = temp;
+                                    cout << "Move leaves king in check!" <<endl;
+                                }
+                                else
+                                {
+                                    cur->move(Er, Ec); // Perform the move
+                                    unhighlight(allleagalmove); // Remove highlights
+                                    RC[Sr][Sc] = nullptr;
+                                    RC[Er][Ec] = cur;
 
-                                changeturn(); // Change the turn
-                                cur = nullptr;
-
+                                    changeturn(); // Change the turn
+                                    cur = nullptr;
+                                }
                                 if (isKinginCheck(RC))
                                 {
                                     cout << "Check!" << endl;

@@ -33,7 +33,5 @@ bool Horse::isleagalmove(Piece* RC[8][8], int Er, int Ec)
             return true;
         }
     }
-  
-    cout << "Knight Invalid move" << endl;
     return false;
 }

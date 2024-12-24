@@ -15,21 +15,22 @@ class Board
 private:
 	Piece* RC[8][8];
     bool Gamestate;
-    bool Turn;//Ture=White,False=Black
+    bool Turn;                                                                  //Ture=White,False=Black
     bool allleagalmove[8][8];
     sf::Texture Boardtexture;
     sf::Sprite board;
 public:
 	Board();
-    void initializeBoard();//set initial positions
-    void play(sf::RenderWindow &window);//main playing loop
-    void Drawboard(sf::RenderWindow& win);//draws the chess board 
-    void DrawPiece(Piece* RC[8][8], sf::RenderWindow& win);//daws pieces
-    void DrawHighlights(sf::RenderWindow& window, bool alllegalmove[8][8]);//draws highlights
-    void unhighlight(bool alllegalmove[8][8]);//remove highlights
-    Piece* getpos(int x,int y);//get starting position
-    void changeturn();//trun change
-    bool isKinginCheck(Piece* RC[8][8]);
+    void initializeBoard();                                                     //set initial positions
+    void play(sf::RenderWindow &window);                                        //main playing loop
+    void Drawboard(sf::RenderWindow& win);                                      //draws the chess board 
+    void DrawPiece(Piece* RC[8][8], sf::RenderWindow& win);                     //daws pieces
+    void DrawHighlights(sf::RenderWindow& window, bool alllegalmove[8][8]);     //draws highlights
+    void unhighlight(bool alllegalmove[8][8]);                                  //remove highlights
+    Piece* getpos(int x,int y);                                                 //get starting position
+    void changeturn();                                                          //trun change
+    bool isKinginCheck(bool turn);
+    bool isSelfCheck(bool turn);
     bool isCheckMate();
 };
 Board::Board() 
@@ -47,90 +48,13 @@ Board::Board()
     board.setTexture(Boardtexture);
     
 }
-//void Board::play(sf::RenderWindow& window)
-//{
-//    Piece* cur = nullptr; //current piece ptr
-//    int Sr = -1, Sc = -1;
-//    while (window.isOpen())
-//    {
-//        sf::Event evnt;
-//        while (window.pollEvent(evnt))
-//        {
-//            if (evnt.type == evnt.Closed)
-//            {
-//                window.close();
-//            }
-//            if (evnt.type == sf::Event::MouseButtonPressed)
-//            {
-//    
-//                if (evnt.mouseButton.button == sf::Mouse::Left) 
-//                {
-//                    
-//                    if (cur == nullptr)
-//                    {
-//                        int xpos = sf::Mouse::getPosition(window).x;
-//                        int ypos = sf::Mouse::getPosition(window).y;
-//                       
-//                            cur = getpos(xpos, ypos);//to get positon
-//                            Sr = (ypos - 23) / 75;
-//                            Sc = (xpos - 23) / 75;
-//                            if (cur != nullptr)
-//                            {
-//                                cur->highlight(RC, Sr, Sc, allleagalmove);
-//                            }
-//                        
-//                     
-//                    }
-//                    else if (cur != nullptr)
-//                    {
-//                        {
-//                            
-//                            int xpos = sf::Mouse::getPosition(window).x;
-//                            int ypos = sf::Mouse::getPosition(window).y;
-//                            int Er = (ypos - 23) / 75;
-//                            int Ec = (xpos - 23) / 75;
-//                            if (cur->isleagalmove(RC,Er,Ec) == 1&& isKinginCheck(RC) == false)//Move to that Position
-//                            {
-//                                cur->move(Sr,Sc,Er, Ec);
-//                                unhighlight(allleagalmove);
-//                                RC[Sr][Sc] = nullptr;
-//                                RC[Er][Ec] = cur;
-//                                if ((Sr == Er) && (Sc == Ec))
-//                                {
-//                                    changeturn();
-//                                }
-//                                changeturn();
-//                                cur = nullptr;
-//                                if (isKinginCheck(RC) == true)
-//                                {
-//                                    cout << "Check";
-//                                }
-//                            }
-//                            else 
-//                            {
-//                                cout << "Still checked";
-//                                cur = nullptr;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            window.clear();
-//            Drawboard(window);
-//            DrawPiece(RC, window);
-//            DrawHighlights(window,allleagalmove);
-//            window.display();
-//
-//        }
-//        
-//    }
-//}
+
 void Board::initializeBoard()
 {
     for (int i = 0; i < 8; i++)
     {
-       RC[1][i] = new Pawn("BPawan", 'B', { 1, i }, sf::Vector2f(((i * 75) + 23), ((1 * 75) + 23)), "b_pawn.png");
-       RC[6][i] = new Pawn("WPawan", 'W', { 6, i }, sf::Vector2f(((i * 75) + 23) ,((6 * 75) + 23)), "w_pawn.png");
+      /* RC[1][i] = new Pawn("BPawan", 'B', { 1, i }, sf::Vector2f(((i * 75) + 23), ((1 * 75) + 23)), "b_pawn.png");
+       RC[6][i] = new Pawn("WPawan", 'W', { 6, i }, sf::Vector2f(((i * 75) + 23) ,((6 * 75) + 23)), "w_pawn.png");*/
     }
     //rooks
     RC[0][0] = new Rook("BRook",'B', { 0, 0 }, sf::Vector2f(((0 * 75) + 23),((0 * 75) + 22)) ,"b_rook.png");
@@ -174,7 +98,6 @@ Piece* Board::getpos(int x, int y)
             if (RC[r][c] != nullptr)
             {
                 temp = RC[r][c];
-                cout << "Selected" << endl;
                 return temp;
             }
         }
@@ -230,33 +153,20 @@ void Board::unhighlight(bool alllegalmove[8][8])
         }
     }
 }
-bool Board::isKinginCheck(Piece* RC[8][8])
+bool Board::isKinginCheck(bool turn)
 {
     int OpKR=-1, OpKC=-1;
-    for (int i = 0;i < 8;i++)
+    for (int i = 0; i < 8; i++)
     {
-        for (int y = 0; y < 8; y++)
+        for (int j = 0; j < 8; j++)
         {
-            if (RC[i][y] != nullptr)
+            if (RC[i][j] != nullptr)
             {
-                if (Turn == false)
+                if ((turn && RC[i][j]->gettype() == "WKing") || (!turn && RC[i][j]->gettype() == "BKing"))
                 {
-                    if (RC[i][y]->gettype() == "BKing")
-                    {
-                        OpKR = i;
-                        OpKC = y;
-                        break;
-                    }
-                }
-                else
-                {
-                    if (RC[i][y]->gettype() == "WKing")
-                    {
-                        OpKR = i;
-                        OpKC = y;
-                        break;
-
-                    }
+                    OpKR = i;
+                    OpKC = j;
+                    break;
                 }
             }
         }
@@ -280,56 +190,147 @@ bool Board::isKinginCheck(Piece* RC[8][8])
     }
     return false;
 }
+bool Board::isSelfCheck(bool turn)
+{
+    return isKinginCheck(!turn);
+}
 bool Board::isCheckMate()
 {
+//{
+//    int OpKR = -1, OpKC = -1;
+//    for (int i = 0; i < 8; i++) 
+//    {
+//        for (int j = 0; j < 8; j++) 
+//        {
+//            if (RC[i][j] != nullptr) 
+//            {
+//                if ((Turn && RC[i][j]->gettype() == "BKing") || (!Turn && RC[i][j]->gettype() == "WKing"))
+//                {
+//                    OpKR = i;
+//                    OpKC = j;
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//    
+//    for (int i = 0; i < 8; i++)
+//    {
+//        for (int j = 0; j < 8; j++)
+//        {
+//            if (RC[i][j] != nullptr && RC[i][j]->getColor() == RC[OpKR][OpKC]->getColor())//for checking on checked king pieces
+//            {
+//               Piece* piece = RC[i][j];
+//               for (int x = 0; x < 8; x++)
+//               {
+//                   for (int y = 0; y < 8; y++)//for checking everymove of that piece
+//                   {
+//                       if (piece->isleagalmove(RC, x, y))
+//                       {
+//                             Piece* temp = RC[x][y]; //a dummy move to check that any piece can reverse the check!
+//                             RC[x][y] = RC[i][j];
+//                             RC[i][j] = nullptr;
+//                             bool CM = isKinginCheck(Turn);
+//                             RC[i][j] = RC[x][y];//reversing the check move
+//                             RC[x][y] = temp;
+//                             if (CM==false)//if king is not in check after that move then its not checkmate
+//                             {
+//                                  return false;
+//                             }
+//                       }
+//                   }
+//               }  
+//            }
+//        }
+//    }
+    
+  
     int OpKR = -1, OpKC = -1;
-    for (int i = 0;i < 8;i++)
-    {
-        for (int y = 0; y < 8; y++)
-        {
-            if (RC[i][y] != nullptr)
-            {
-                if (Turn == false)
-                {
-                    if (RC[i][y]->gettype() == "BKing")
-                    {
-                        OpKR = i;
-                        OpKC = y;
-                        break;
-                    }
-                }
-                else
-                {
-                    if (RC[i][y]->gettype() == "WKing")
-                    {
-                        OpKR = i;
-                        OpKC = y;
-                        break;
 
-                    }
+    // Locate the king of the current player
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if (RC[i][j] != nullptr)
+            {
+                if ((Turn && RC[i][j]->gettype() == "WKing") || (!Turn && RC[i][j]->gettype() == "BKing"))
+                {
+                    OpKR = i;
+                    OpKC = j;
+                    break;
                 }
             }
         }
     }
-    if (OpKC == -1 || OpKR == -1)
-    {
+
+    // If no king is found, return false
+    if (OpKR == -1 || OpKC == -1)
         return false;
-    }
-    bool check[8][8] = { false };
-    for (int i = 0;i < 8;i++)
+
+    // Check all possible moves for the king
+    for (int x = OpKR - 1; x <= OpKR + 1; x++)
     {
-        for (int j = 0;j < 8;j++)
+        for (int y = OpKC - 1; y <= OpKC + 1; y++)
         {
-            if (RC[OpKR][OpKC]->isleagalmove(RC, i, j)==true)
+            if (x >= 0 && x < 8 && y >= 0 && y < 8 && (x != OpKR || y != OpKC))
             {
-                check[i][j] == true;
+                if (RC[OpKR][OpKC]->isleagalmove(RC, x, y))
+                {
+                    // Simulate the king's move
+                    Piece* temp = RC[x][y];
+                    RC[x][y] = RC[OpKR][OpKC];
+                    RC[OpKR][OpKC] = nullptr;
+
+                    bool kingInCheck = isKinginCheck(Turn);
+
+                    // Undo the move
+                    RC[OpKR][OpKC] = RC[x][y];
+                    RC[x][y] = temp;
+
+                    if (!kingInCheck)
+                        return false; // King has a valid move to escape
+                }
             }
-
         }
-
     }
 
+    // Check all pieces of the current player
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if (RC[i][j] != nullptr && RC[i][j]->getColor() == RC[OpKR][OpKC]->getColor())
+            {
+                // Check all possible moves for the piece
+                for (int x = 0; x < 8; x++)
+                {
+                    for (int y = 0; y < 8; y++)
+                    {
+                        if (RC[i][j]->isleagalmove(RC, x, y))
+                        {
+                            // Simulate the move
+                            Piece* temp = RC[x][y];
+                            RC[x][y] = RC[i][j];
+                            RC[i][j] = nullptr;
 
+                            bool kingInCheck = isKinginCheck(Turn);
+
+                            // Undo the move
+                            RC[i][j] = RC[x][y];
+                            RC[x][y] = temp;
+
+                            // If the king is not in check after this move, it's not checkmate
+                            if (!kingInCheck)
+                                return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
 }
 void Board::play(sf::RenderWindow& window)
 {
@@ -386,32 +387,30 @@ void Board::play(sf::RenderWindow& window)
                                 Piece* temp = RC[Er][Ec];
                                 RC[Er][Ec] = cur;
                                 RC[Sr][Sc] = nullptr;
-                                if (isKinginCheck(RC))
+                                if (isKinginCheck(Turn) || isSelfCheck(Turn))
                                 {
                                     RC[Sr][Sc] = cur;
                                     RC[Er][Ec] = temp;
-                                    cout << "Move leaves king in check!" <<endl;
                                 }
                                 else
                                 {
                                     cur->move(Er, Ec); // Perform the move
-                                    unhighlight(allleagalmove); // Remove highlights
+                                    unhighlight(allleagalmove);// Remove highlights
                                     RC[Sr][Sc] = nullptr;
                                     RC[Er][Ec] = cur;
-
-                                    changeturn(); // Change the turn
+                                    changeturn(); //Change the turn
                                     cur = nullptr;
+                                    if (isCheckMate()==true)
+                                    {
+                                        cout<<"Check Mate";
+                                    }
                                 }
-                                if (isKinginCheck(RC))
-                                {
-                                    cout << "Check!" << endl;
-                                }
+                              
                             }
                             else
                             {
-                                cout << "Invalid move or king in check!" << endl;
                                 cur = nullptr;
-                                unhighlight(allleagalmove); // Remove highlights
+                                unhighlight(allleagalmove);//Remove highlights
                             }
                         }
                     }

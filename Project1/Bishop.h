@@ -30,6 +30,6 @@ bool Bishop::isleagalmove(Piece* RC[8][8], int Er, int Ec)
         }
     }
    
-    cout << "Bishop legal move False" << endl;
+ 
     return false;
 }

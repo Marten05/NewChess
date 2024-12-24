@@ -45,6 +45,5 @@ bool Rook::isleagalmove(Piece* RC[8][8], int Er, int Ec)
 			return true;
 		}
 	}
-	cout << "Move is invalid." << endl;
 	return false;
 }

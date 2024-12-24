@@ -55,6 +55,6 @@ bool Queen::isleagalmove(Piece* RC[8][8], int Er, int Ec)
         }
     }
   
-    cout << "Queen legal move: FALSE - Invalid move" <<endl;
+ 
     return false;
 }

@@ -73,7 +73,6 @@ bool Piece::verticalmove(int Er, int Ec)
 {	
 	if(this->index.y== Ec)
 	{
-		cout << "veiticalmove TRUE" << endl;
 		return true;
 	}
 	return false;
@@ -82,7 +81,6 @@ bool Piece::horizentalmove(int Er, int Ec)
 {
 	if (this->index.x == Er)
 	{
-		cout << "horizentalmove TRUE" << endl;
 		return true;
 	}
 	return false;
@@ -103,7 +101,7 @@ bool Piece::ishorizentalclear(Piece* RC[8][8], int Er, int Ec)
 		{
 			if (RC[this->index.x][c] != nullptr)
 			{
-				cout << "horizentalcheck false1" << endl;
+				
 				return false;
 			}
 		}
@@ -115,12 +113,12 @@ bool Piece::ishorizentalclear(Piece* RC[8][8], int Er, int Ec)
 		{
 			if (RC[this->index.x][c] != nullptr)
 			{
-				cout << "horizentalcheck false2" << endl;
+				
 				return false;
 			}
 		}
 	}
-	cout << "horizentalcheck TRUE" << endl;
+	
 	return true;
 
 }
@@ -133,7 +131,6 @@ bool Piece::isverticalclear(Piece* RC[8][8], int Er, int Ec)
 		{
 			if (RC[c][this->index.y] != nullptr)
 			{
-				cout << "verticalcheck false1" << endl;
 				return false;
 			}
 		}
@@ -145,12 +142,11 @@ bool Piece::isverticalclear(Piece* RC[8][8], int Er, int Ec)
 		{
 			if (RC[c][this->index.y] != nullptr)
 			{
-				cout << "verticalcheck false2" << endl;
+				
 				return false;
 			}
 		}
 	}
-	cout << "verticalcheck TRUE" << endl;
 	return true;
 }
 bool Piece::isdiagnolclear(Piece* RC[8][8], int Er, int Ec)

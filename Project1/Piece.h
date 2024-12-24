@@ -21,7 +21,7 @@ public:
 	Piece(string TypePiece,char c,cordinates x, sf::Vector2f pos,string fileName);
 
 	sf::Sprite SpritePiece();//getter sprite
-	void move(int Sr, int Sc, int x, int y);//to make move
+	void move( int x, int y);//to make move
 	bool getColor();//to get color
 	string gettype();
 
@@ -52,7 +52,7 @@ Piece::Piece(string TypePiece,char c, cordinates x, sf::Vector2f pos,string file
 	piece.setScale(0.28f, 0.28f);
 }
 
-void Piece::move(int Sr,int Sc,int Er, int Ec)
+void Piece::move(int Er, int Ec)
 {
 		this->index.x = Er;
 		this->index.y = Ec;

@@ -30,10 +30,8 @@ bool King::isleagalmove(Piece* RC[8][8], int Er, int Ec)
         else
         {
             return true;
-        }
-        
+        }    
     }
-  
     cout << "King legal move: FALSE " << endl;
     return false;
 }

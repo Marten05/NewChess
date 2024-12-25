@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <string>
 #include "Piece.h"
@@ -32,6 +33,9 @@ public:
     bool isKinginCheck(bool turn);
     bool isSelfCheck(bool turn);
     bool isCheckMate();
+    bool isStalemate();
+    void playsound(int i);
+
 };
 Board::Board() 
 {
@@ -48,7 +52,6 @@ Board::Board()
     board.setTexture(Boardtexture);
     
 }
-
 void Board::initializeBoard()
 {
     for (int i = 0; i < 8; i++)
@@ -244,10 +247,13 @@ bool Board::isCheckMate()
 //        }
 //    }
     
-  
+    if (isKinginCheck(Turn) == false)
+    {
+        return false;
+    }
     int OpKR = -1, OpKC = -1;
 
-    // Locate the king of the current player
+    // findingking of current player
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
@@ -263,8 +269,6 @@ bool Board::isCheckMate()
             }
         }
     }
-
-    // If no king is found, return false
     if (OpKR == -1 || OpKC == -1)
         return false;
 
@@ -277,19 +281,18 @@ bool Board::isCheckMate()
             {
                 if (RC[OpKR][OpKC]->isleagalmove(RC, x, y))
                 {
-                    // Simulate the king's move
+                    // dummy move
                     Piece* temp = RC[x][y];
                     RC[x][y] = RC[OpKR][OpKC];
                     RC[OpKR][OpKC] = nullptr;
 
                     bool kingInCheck = isKinginCheck(Turn);
 
-                    // Undo the move
                     RC[OpKR][OpKC] = RC[x][y];
                     RC[x][y] = temp;
 
                     if (!kingInCheck)
-                        return false; // King has a valid move to escape
+                        return false; // 
                 }
             }
         }
@@ -329,13 +332,153 @@ bool Board::isCheckMate()
             }
         }
     }
+ 
+    return true;
+}
+bool Board::isStalemate()
+{
+//{
+//    if (isKinginCheck(Turn) == true)
+//    {
+//        cout << "1 stale mate";
+//        return false;
+//    }
+//    int OpKR = -1, OpKC = -1;
+//
+//    for (int i = 0; i < 8; i++)
+//    {
+//        for (int j = 0; j < 8; j++)
+//        {
+//            if (RC[i][j] != nullptr)
+//            {
+//                if ((Turn && RC[i][j]->gettype() == "WKing") || (!Turn && RC[i][j]->gettype() == "BKing"))
+//                {
+//                    OpKR = i;
+//                    OpKC = j;
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//
+//    if (OpKR == -1 || OpKC == -1)
+//    {
+//        cout << "2 stale mate";
+//        return false;
+//    }
+//
+//    for (int x = OpKR - 1; x <= OpKR + 1; x++)
+//    {
+//        for (int y = OpKC - 1; y <= OpKC + 1; y++)
+//        {
+//            if (x >= 0 && x < 8 && y >= 0 && y < 8 && (x != OpKR || y != OpKC))
+//            {
+//                if (RC[OpKR][OpKC]->isleagalmove(RC, x, y))
+//                {
+//                    // dummy move
+//                    Piece* temp = RC[x][y];
+//                    RC[x][y] = RC[OpKR][OpKC];
+//                    RC[OpKR][OpKC] = nullptr;
+//
+//                    bool kingInCheck = isKinginCheck(Turn);
+//
+//                    RC[OpKR][OpKC] = RC[x][y];
+//                    RC[x][y] = temp;
+//
+//                    if (!kingInCheck)
+//                    {
+//                        cout << "3 stale mate";
+//                        return false;
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    for (int i = 0; i < 8; i++)
+//    {
+//        for (int j = 0; j < 8; j++)
+//        {
+//            if (RC[i][j] != nullptr && RC[i][j]->getColor() == RC[OpKR][OpKC]->getColor())
+//            {
+//                for (int x = 0; x < 8; x++)
+//                {
+//                    for (int y = 0; y < 8; y++)
+//                    {
+//                        if (RC[i][j]->isleagalmove(RC, x, y)==true)
+//                        {
+//                            cout << "4 stale mate";
+//                            return false;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    cout << "TrueTrueTrueTrueTrueTrueTrueTrueTrueTrueTrue";
+//    return true;
+    if (isKinginCheck(Turn)) {
+        return false; // Not stalemate if the king is in check
+    }
 
+    // Check if any piece of the current player has a legal move
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++) 
+        {
+            if (RC[i][j] != nullptr && RC[i][j]->getColor() ==Turn)
+            {
+                for (int x = 0; x < 8; x++) {
+                    for (int y = 0; y < 8; y++) {
+                        if (RC[i][j]->isleagalmove(RC, x, y)) {
+                            // Simulate the move
+                            Piece* temp = RC[x][y];
+                            RC[x][y] = RC[i][j];
+                            RC[i][j] = nullptr;
+
+                            bool kingInCheck = isKinginCheck(Turn);
+
+                            // Undo the move
+                            RC[i][j] = RC[x][y];
+                            RC[x][y] = temp;
+
+                            // If any legal move exists, it's not stalemate
+                            if (!kingInCheck) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // No legal moves and king not in check => stalemate
     return true;
 }
 void Board::play(sf::RenderWindow& window)
 {
-    Piece* cur = nullptr; // Current piece pointer
+    Piece* cur = nullptr; // piece pointer
     int Sr = -1, Sc = -1; // Starting row and column
+
+    sf::SoundBuffer move;
+    move.loadFromFile("move.mp3");
+    sf::Sound Move;
+    Move.setBuffer(move);
+
+    sf::SoundBuffer cap;
+    cap.loadFromFile("capture.mp3");
+    sf::Sound capture;
+    capture.setBuffer(cap);
+
+    sf::SoundBuffer check;
+    check.loadFromFile("move-check.mp3");
+    sf::Sound Check;
+    Check.setBuffer(check);
+
+    sf::SoundBuffer illegal;
+    illegal.loadFromFile("illegal.mp3");
+    sf::Sound Illegal;
+    Illegal.setBuffer(illegal);
 
     while (window.isOpen())
     {
@@ -357,7 +500,6 @@ void Board::play(sf::RenderWindow& window)
 
                     if (cur == nullptr)
                     {
-                        // No piece is currently selected
                         cur = getpos(xpos, ypos); // Get the piece at the clicked position
                         Sr = clickedRow;
                         Sc = clickedCol;
@@ -369,26 +511,27 @@ void Board::play(sf::RenderWindow& window)
                     }
                     else
                     {
-                        // A piece is already selected
                         if (Sr == clickedRow && Sc == clickedCol)
                         {
-                            // Clicked on the same piece: unselect it
+                            // unselect it
                             cur = nullptr;
                             unhighlight(allleagalmove);
                         }
                         else
                         {
-                            // Attempt to move the piece
+                            
                             int Er = clickedRow;
                             int Ec = clickedCol;
 
                             if (cur->isleagalmove(RC, Er, Ec))
                             {
                                 Piece* temp = RC[Er][Ec];
+                                bool isCapture = (temp != nullptr);
                                 RC[Er][Ec] = cur;
                                 RC[Sr][Sc] = nullptr;
                                 if (isKinginCheck(Turn) || isSelfCheck(Turn))
                                 {
+                                    Illegal.play();
                                     RC[Sr][Sc] = cur;
                                     RC[Er][Ec] = temp;
                                 }
@@ -396,13 +539,34 @@ void Board::play(sf::RenderWindow& window)
                                 {
                                     cur->move(Er, Ec); // Perform the move
                                     unhighlight(allleagalmove);// Remove highlights
+                                    if (isCapture)
+                                    {
+                                        if (isKinginCheck(Turn))
+                                        {
+                                            Check.play();
+                                        }
+                                        else
+                                        {
+                                            capture.play();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        
+                                        Move.play();
+                                    }
                                     RC[Sr][Sc] = nullptr;
                                     RC[Er][Ec] = cur;
                                     changeturn(); //Change the turn
                                     cur = nullptr;
+
                                     if (isCheckMate()==true)
                                     {
                                         cout<<"Check Mate";
+                                    }
+                                    if (isStalemate() == true)
+                                    {
+                                        cout << "Stale Mate";
                                     }
                                 }
                               

@@ -34,7 +34,6 @@ public:
     bool isSelfCheck(bool turn);
     bool isCheckMate();
     bool isStalemate();
-    void playsound(int i);
 
 };
 Board::Board() 
@@ -56,8 +55,8 @@ void Board::initializeBoard()
 {
     for (int i = 0; i < 8; i++)
     {
-      /* RC[1][i] = new Pawn("BPawan", 'B', { 1, i }, sf::Vector2f(((i * 75) + 23), ((1 * 75) + 23)), "b_pawn.png");
-       RC[6][i] = new Pawn("WPawan", 'W', { 6, i }, sf::Vector2f(((i * 75) + 23) ,((6 * 75) + 23)), "w_pawn.png");*/
+       RC[1][i] = new Pawn("BPawan", 'B', { 1, i }, sf::Vector2f(((i * 75) + 23), ((1 * 75) + 23)), "b_pawn.png");
+       RC[6][i] = new Pawn("WPawan", 'W', { 6, i }, sf::Vector2f(((i * 75) + 23) ,((6 * 75) + 23)), "w_pawn.png");
     }
     //rooks
     RC[0][0] = new Rook("BRook",'B', { 0, 0 }, sf::Vector2f(((0 * 75) + 23),((0 * 75) + 22)) ,"b_rook.png");
@@ -312,14 +311,14 @@ bool Board::isCheckMate()
                     {
                         if (RC[i][j]->isleagalmove(RC, x, y))
                         {
-                            // Simulate the move
+                           
                             Piece* temp = RC[x][y];
                             RC[x][y] = RC[i][j];
                             RC[i][j] = nullptr;
 
                             bool kingInCheck = isKinginCheck(Turn);
 
-                            // Undo the move
+                            
                             RC[i][j] = RC[x][y];
                             RC[x][y] = temp;
 
@@ -420,7 +419,7 @@ bool Board::isStalemate()
         return false; // Not stalemate if the king is in check
     }
 
-    // Check if any piece of the current player has a legal move
+    // Check current player has a legal move
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++) 
@@ -430,14 +429,14 @@ bool Board::isStalemate()
                 for (int x = 0; x < 8; x++) {
                     for (int y = 0; y < 8; y++) {
                         if (RC[i][j]->isleagalmove(RC, x, y)) {
-                            // Simulate the move
+                            
                             Piece* temp = RC[x][y];
                             RC[x][y] = RC[i][j];
                             RC[i][j] = nullptr;
 
                             bool kingInCheck = isKinginCheck(Turn);
 
-                            // Undo the move
+         
                             RC[i][j] = RC[x][y];
                             RC[x][y] = temp;
 
@@ -452,7 +451,7 @@ bool Board::isStalemate()
         }
     }
 
-    // No legal moves and king not in check => stalemate
+    // No legal moves and king not in check =stalemate
     return true;
 }
 void Board::play(sf::RenderWindow& window)
@@ -479,6 +478,11 @@ void Board::play(sf::RenderWindow& window)
     illegal.loadFromFile("illegal.mp3");
     sf::Sound Illegal;
     Illegal.setBuffer(illegal);
+
+    sf::SoundBuffer mate;
+    mate.loadFromFile("checkmate.mp3");
+    sf::Sound checkmate;
+    checkmate.setBuffer(mate);
 
     while (window.isOpen())
     {
@@ -562,10 +566,12 @@ void Board::play(sf::RenderWindow& window)
 
                                     if (isCheckMate()==true)
                                     {
+                                        checkmate.play();
                                         cout<<"Check Mate";
                                     }
                                     if (isStalemate() == true)
                                     {
+                                        checkmate.play();
                                         cout << "Stale Mate";
                                     }
                                 }
